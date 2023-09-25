@@ -1,86 +1,114 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.InputSystem;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-public class Movement : MonoBehaviour
+public class movement : MonoBehaviour
 {
-    public InputAction inputaction;
-    public float speed = 1f;
-    private Rigidbody2D charbody;
-    private Vector2 velocity;
-    private Vector2 moveinput;
     public Animator anim;
+    public Rigidbody2D rb;
+    public Player_input_action playercontrol;
     
-    public InputAction playercontrol;
+    //for attack circle
+    public Transform attackPoint;
 
-    //[SerializeField]
-    //private InputActionReference movement, shoot, pointerPosition;
+    public float moveSpeed = 1f;
+
+    Vector2 moveDirection = Vector2.zero;
+
+    private Vector2 m;
+    public bool canMove = true;
 
 
-    private void OnEnable()
+    private void Awake()
     {
-        playercontrol.Enable();
+        playercontrol = new Player_input_action();
     }
-
-    private void OnDisable()
-    {
-        playercontrol.Disable();
-    }
-    // Start is called before the first frame update
+    
     void Start()
     {
-        //speed for x and y directions. That is why we use Vector2
-        velocity = new Vector2(speed, speed);
-
-        //take the object from the gameObject
-        charbody = GetComponent<Rigidbody2D>();
+        
     }
 
     // Update is called once per frame
-    /*
     void Update()
     {
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
-        inputMove = new Vector2
-        (
-            horizontal,
-            vertical
-
-        );
-
-        /*
-        if (horizontal > 0.1f) 
-        {
-            transform.rotation = Quaternion.Euler(0f, 0f, 90f);
-        }
-        
-        //tell me what animation to play
-        anim.SetFloat("Speed", Mathf.Abs(horizontal) + Mathf.Abs(vertical));
+        anim.SetFloat("Speed", Mathf.Abs(m.x) + Mathf.Abs(m.y));
 
     }
-    */
+
+
     private void FixedUpdate()
     {
-        //change in the 2D space
-        //Vector2 delta = moveinput * speed * Time.deltaTime;
-        //Vector2 newPosition = charbody.position + delta;
-        //charbody.MovePosition(newPosition);
-        //moveinput = movement.action.ReadValue<Vector2>();
-        charbody.MovePosition(charbody.position + moveinput * speed * Time.deltaTime);
+        //variant 1
+        //rb.MovePosition(rb.position + m * moveSpeed * Time.fixedDeltaTime);
 
+        //variant 2
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("Player_Attack"))
+        {
+            canMove = false;
+            //Debug.Log("movement stoped!");
+        }
+        else
+        {
+            canMove = true;
+        }
+
+        //Here the movement happen! Change the velocity of the rigidbody
+        //It should be within OnUpdate if we want to move by HOLDING keys
+        if (canMove && (m.x != 0 || m.y != 0))
+        {
+            anim.SetFloat("X_axis", m.x);
+            anim.SetFloat("Y_axis", m.y);
+            rb.velocity = m * moveSpeed;
+        }
+
+
+        //variant3
+        //rb.AddForce(m * moveSpeed);
 
     }
+
 
     public void OnMove(InputValue value)
     {
+        
+        m = value.Get<Vector2>();
+        
+        //Here where animation happend! Triggers when key pressed
+        if (canMove && m != Vector2.zero)
+        {
+            
+            if (m.x > 0)
+            {
+                attackPoint.transform.localPosition = new Vector2(1f, 0f);
+            }
+            else if (m.x < 0) 
+            {
+                attackPoint.transform.localPosition = new Vector2(-1f, 0f);
+            }
 
-        //moveinput = value.Get<Vector2>();
-        moveinput = playercontrol.ReadValue<Vector2>();
-        anim.SetFloat("X_axis", moveinput.x);
-        anim.SetFloat("Y_axis", moveinput.y);
+            if (m.y > 0)
+            {
+                attackPoint.transform.localPosition = new Vector2(0f, 1f);
+            }
+            else if (m.y < 0)
+            {
+                attackPoint.transform.localPosition = new Vector2(0f, -1f);
+            }
+
+            
+            
+        }
+        
+
 
     }
+
+    public void OnFire() 
+    {
+        print("Shots");   
+    }
     
-}
+}   
+
