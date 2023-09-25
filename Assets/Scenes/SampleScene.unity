@@ -843,7 +843,6 @@ GameObject:
   - component: {fileID: 748573445}
   - component: {fileID: 748573444}
   - component: {fileID: 748573443}
-  - component: {fileID: 748573442}
   - component: {fileID: 748573441}
   - component: {fileID: 748573440}
   m_Layer: 0
@@ -893,21 +892,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 1
   target: {fileID: 1178762818}
---- !u!114 &748573442
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 748573439}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7119887a063abc543a8220782d60a24a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 2
-  target: {fileID: 1178762818}
-  LineOfSight: 0
 --- !u!114 &748573443
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2178,7 +2162,7 @@ MonoBehaviour:
   anim: {fileID: 1178762819}
   rb: {fileID: 1178762816}
   attackPoint: {fileID: 944290682}
-  moveSpeed: 5
+  moveSpeed: 4
   canMove: 1
 --- !u!50 &1178762816
 Rigidbody2D:
